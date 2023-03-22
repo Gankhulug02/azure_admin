@@ -1,7 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 // @mui
 import {
   Card,
@@ -34,10 +35,10 @@ import USERLIST from '../_mock/user';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
+  { id: 'title', label: 'Нэр', alignRight: false },
+  { id: 'description', label: 'Тайлбар', alignRight: false },
+  { id: 'categoryImg', label: 'Зураг', alignRight: false },
+  { id: 'categoryRating', label: 'Үнэлгээ', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
 ];
@@ -76,6 +77,8 @@ function applySortFilter(array, comparator, query) {
 export default function UserPage() {
   const [open, setOpen] = useState(null);
 
+  const [category, setCategory] = useState(null);
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -86,7 +89,7 @@ export default function UserPage() {
 
   const [filterName, setFilterName] = useState('');
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -146,10 +149,22 @@ export default function UserPage() {
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  // axios
+  useEffect(() => {
+    axios
+      .get('http://localhost:8000/categories')
+      .then((res) => {
+        console.log(res.data.categories);
+        setCategory(res.data.categories);
+      })
+      .catch((error) => {
+        console.log('ERR', error);
+      });
+  }, []);
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> Category | Azure </title>
       </Helmet>
 
       <Container>
@@ -158,7 +173,7 @@ export default function UserPage() {
             User
           </Typography>
           <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
+            New Category
           </Button>
         </Stack>
 
