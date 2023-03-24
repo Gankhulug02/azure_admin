@@ -12,18 +12,22 @@ import Iconify from '../../../components/iconify';
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const { setUser } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
 
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('ganaa@gmail.com');
-  const [password, setPassword] = useState('Pass');
+  const [email, setEmail] = useState('ganaa02@gmail.com');
+  const [password, setPassword] = useState('Pass123');
 
   const handleClick = async () => {
     try {
       const result = await axios.post('http://localhost:8000/users/login', { email, password });
-      setUser(result.data.user[0]);
+      console.log(result.data.user);
+      setUser(result.data.user);
+      console.log(user);
+      console.log('asd');
       navigate('/dashboard', { replace: true });
     } catch (error) {
+      console.log('ASD');
       console.log(error);
     }
   };

@@ -85,6 +85,8 @@ export default function UserPage() {
     { icon: <EditIcon color="action" />, name: 'Edit' },
   ];
 
+  const [selectedItem, setSelectedItem] = useState(null);
+
   const [categories, setCategory] = useState([]);
 
   const [open, setOpen] = useState(null);
@@ -101,15 +103,7 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [catData, setCatData] = useState({});
-
-  const [isModal, setIsModal] = useState(false);
-
-  const [isSubmit, setIsSubmit] = useState(false);
-
-  const modalToggle = () => {
-    setIsModal(!isModal);
-  };
+  const [isChanged, setChanged] = useState(false);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -171,20 +165,26 @@ export default function UserPage() {
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
-  const getData = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
     axios
       .get('http://localhost:8000/categories')
       .then((res) => {
-        console.log('CAT IRLEE', res.data.categories);
+        console.log('CAT IRLEE--', res.data.categories);
         setCategory(res.data.categories);
         setFilteredCategory(res.data.categories);
       })
       .catch((err) => {
         console.log('Err', err);
       });
-  };
+  }, [isChanged]);
 
-  useEffect(() => getData(), [isSubmit]);
+  useEffect(() => {
+    if (selectedItem !== null) {
+      setModalOpen(true);
+    }
+  }, [selectedItem]);
 
   return (
     <>
@@ -197,14 +197,7 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             Категори
           </Typography>
-          <Button
-            onClick={() => {
-              modalToggle();
-              setCatData({ name: 'New Category' });
-            }}
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-          >
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
             Шинэ Категори Үүсгэх
           </Button>
         </Stack>
@@ -227,7 +220,7 @@ export default function UserPage() {
                   />
                   {/* {.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)} */}
                   <TableBody>
-                    {fileteredCategory?.map((row) => {
+                    {fileteredCategory?.map((row, i) => {
                       const { _id, title, description, categoryImg, categoryRating } = row;
 
                       // selected={selectedUser}
@@ -257,38 +250,54 @@ export default function UserPage() {
 
                           <TableCell align="right">
                             {/* <IconButton size="large" color="inherit"> */}
-                            {/* <Iconify icon={'eva:more-vertical-fill'} /> */}
-                            {icons.map((e, index) => (
-                              <Button
+                            <button
+                              onClick={() => {
+                                setSelectedItem(row);
+                              }}
+                            >
+                              edit
+                            </button>
+                            {/* {icons.map((e, index) => (
+                              <Modal
                                 key={index}
-                                onClick={() => {
-                                  modalToggle();
-                                  setCatData({ ...row, name: e.name });
-                                }}
-                              >
-                                {e.icon}
-                              </Button>
-                            ))}
+                                icon={e.icon}
+                                name={e.name}
+                                title={title}
+                                description={description}
+                                categoryImg={categoryImg}
+                                categoryRating={categoryRating}
+                                id={_id}
+                                setChanged={setChanged}
+                              />
+                            ))} */}
                           </TableCell>
                         </TableRow>
                       );
                     })}
+                    {isModalOpen && (
+                      <Modal
+                        open={isModalOpen}
+                        setOpen={setModalOpen}
+                        selectedItem={selectedItem}
+                        isChanged={isChanged}
+                        // key={index}
+                        // icon={e.icon}
+                        // name={e.name}
+                        // title={title}
+                        // description={description}
+                        // categoryImg={categoryImg}
+                        // categoryRating={categoryRating}
+                        // id={_id}
+                        setChanged={setChanged}
+                      />
+                    )}
+
                     {emptyRows > 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>
                         <TableCell colSpan={6} />
                       </TableRow>
                     )}
                   </TableBody>
-
-                  {isModal && (
-                    <Modal
-                      catData={catData}
-                      isSubmit={isSubmit}
-                      setIsSubmit={setIsSubmit}
-                      isModal={isModal}
-                      modalToggle={modalToggle}
-                    />
-                  )}
 
                   {isNotFound && (
                     <TableBody>
