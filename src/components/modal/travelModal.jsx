@@ -15,6 +15,7 @@ import MyAlert from '../alert/alert';
 import { editTravel, deleteTravel, createTravel } from '../../axios/travel';
 import { CategoryContext } from '../../context/Category';
 import { AlertContext } from '../../context/Alert';
+
 // import { filter } from 'lodash';
 const style = {
   display: 'flex',

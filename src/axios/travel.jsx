@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React, { useEffect } from 'react';
+// import { AlertContext } from '../../context/Alert';
+// const { errorAlert } = useContext(AlertContext);
 
 const editTravel = (filteredTravel, _id, catId, modalToggle, setOpen, setAlertText, setAlertSeverity) => {
   axios
@@ -7,7 +9,7 @@ const editTravel = (filteredTravel, _id, catId, modalToggle, setOpen, setAlertTe
     .then((res) => {
       console.log('res', res);
       console.log('res.body.message', res.data.message);
-      setAlertSeverity('error');
+      setAlertSeverity('success');
       setOpen(true);
       setAlertText(res.data.message);
       modalToggle();

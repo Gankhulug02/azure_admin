@@ -45,8 +45,7 @@ const TABLE_HEAD = [
   { id: 'description', label: 'Тайлбар', alignRight: false },
   { id: 'categoryImg', label: 'Зураг', alignRight: false },
   { id: 'catgegoryRating', label: 'Үнэлгээ', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: '' },
+  { id: '', label: 'Actions', alignRight: true },
 ];
 
 // ----------------------------------------------------------------------
@@ -83,6 +82,7 @@ function applySortFilter(array, comparator, query) {
 export default function UserPage() {
   // State
   const [open, setOpen] = useState(null);
+  const [newCategory, setNewCategory] = useState(false);
 
   const [page, setPage] = useState(0);
 
@@ -191,6 +191,7 @@ export default function UserPage() {
             onClick={() => {
               modalToggle();
               setCatData({ name: 'New Category' });
+              setNewCategory(true);
             }}
             variant="contained"
             startIcon={<Iconify icon="eva:plus-fill" />}
@@ -254,6 +255,7 @@ export default function UserPage() {
                                 onClick={() => {
                                   modalToggle();
                                   setCatData({ ...row, name: e.name });
+                                  setNewCategory(false);
                                 }}
                               >
                                 {e.icon}
@@ -317,6 +319,7 @@ export default function UserPage() {
           setIsSubmit={setIsSubmit}
           isModal={isModal}
           modalToggle={modalToggle}
+          newCategory={newCategory}
         />
       )}
     </>

@@ -2,8 +2,8 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import { TextField } from '@mui/material';
-import { editCat, deleteCat, createCat } from '../../axios/category';
+import { TextField, Typography } from '@mui/material';
+import axios from 'axios';
 
 const style = {
   display: 'flex',
@@ -21,147 +21,52 @@ const style = {
   p: 4,
 };
 
-export default function CategoryModal({ isModal, catData, modalToggle, isSubmit, setIsSubmit }) {
-  const { _id, title, description, categoryImg, categoryRating } = catData;
+export default function CategoryModal({
+  isModal,
+  catData,
+  setCatData,
+  modalToggle,
+  isSubmit,
+  setIsSubmit,
+  newCategory,
+}) {
+  const [newCategoryObj, setNewCategoryObj] = React.useState({
+    title: '',
+    description: '',
+    categoryImg: 'url',
+    categoryRating: '',
+  });
 
-  const [titleChange, setTitleChange] = React.useState(title);
-
-  const [descriptionChange, setDescriptionChange] = React.useState(description);
-
-  const [imgChange, setImgChange] = React.useState(categoryImg);
-
-  const [ratingChange, setRatingChange] = React.useState(categoryRating);
+  const changeHandler = (e) => {
+    if (newCategory) {
+      setNewCategoryObj({ ...newCategoryObj, [e.target.name]: e.target.value });
+    } else {
+      setCatData({ ...catData, [e.target.name]: e.target.value });
+    }
+  };
 
   const toggleSubmit = () => {
     console.log(isSubmit);
     setIsSubmit(!isSubmit);
   };
 
-  let form = '';
+  const updateCategory = async () => {
+    try {
+      const res = await axios.put('http://localhost:8000/categories', catData);
+      modalToggle();
+    } catch (error) {
+      console.log('UC', error);
+    }
+  };
 
-  if (catData.name === 'Edit') {
-    form = (
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', width: '100%' }}>
-        <TextField
-          id="outlined-basic"
-          label="Title"
-          variant="outlined"
-          value={titleChange}
-          onChange={(event) => {
-            setTitleChange(event.target.value);
-          }}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Description"
-          variant="outlined"
-          value={descriptionChange}
-          onChange={(event) => {
-            setDescriptionChange(event.target.value);
-          }}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Image"
-          variant="outlined"
-          value={imgChange}
-          onChange={(event) => {
-            setImgChange(event.target.value);
-          }}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Rating"
-          variant="outlined"
-          type="number"
-          value={ratingChange}
-          onChange={(event) => {
-            setRatingChange(event.target.value);
-          }}
-        />
-        <Button
-          onClick={() => {
-            editCat({ titleChange, descriptionChange, imgChange, ratingChange, _id, toggleSubmit });
-            modalToggle();
-          }}
-        >
-          Submit
-        </Button>
-      </Box>
-    );
-  } else if (catData.name === 'Delete') {
-    form = (
-      <Box>
-        <Box>
-          <h4>Энэ category-г устгахдаа итгэлтэй байна уу?</h4>
-        </Box>
-        <Box>
-          <Button
-            onClick={() => {
-              deleteCat({ _id, setIsSubmit });
-              modalToggle();
-            }}
-          >
-            Yes
-          </Button>
-          <Button
-            onClick={() => {
-              modalToggle();
-              toggleSubmit();
-            }}
-          >
-            No
-          </Button>
-        </Box>
-      </Box>
-    );
-  } else if (catData.name === 'New Category') {
-    form = (
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', width: '100%' }}>
-        <TextField
-          id="outlined-basic"
-          label="Title"
-          variant="outlined"
-          onChange={(event) => {
-            setTitleChange(event.target.value);
-          }}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Description"
-          variant="outlined"
-          onChange={(event) => {
-            setDescriptionChange(event.target.value);
-          }}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Image"
-          variant="outlined"
-          onChange={(event) => {
-            setImgChange(event.target.value);
-          }}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Rating"
-          variant="outlined"
-          type="number"
-          onChange={(event) => {
-            setRatingChange(event.target.value);
-          }}
-        />
-        <Button
-          onClick={() => {
-            createCat({ titleChange, descriptionChange, imgChange, ratingChange, _id, toggleSubmit });
-            modalToggle();
-          }}
-        >
-          Submit
-        </Button>
-      </Box>
-    );
-  }
+  const addCategory = async () => {
+    try {
+      const res = await axios.post('http://localhost:8000/categories', newCategoryObj);
+      modalToggle();
+    } catch (error) {
+      console.log('AC', error);
+    }
+  };
 
   const handleClose = () => modalToggle();
 
@@ -173,7 +78,62 @@ export default function CategoryModal({ isModal, catData, modalToggle, isSubmit,
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>{form}</Box>
+        <Box sx={style}>
+          <Typography variant="h3">{newCategory ? 'Шинэ' : ' Өөрчлөх'} категори</Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', width: '100%' }}>
+            <TextField
+              id="outlined-basic"
+              label="Title"
+              variant="outlined"
+              name="title"
+              value={newCategory ? newCategoryObj.title : catData.title}
+              onChange={changeHandler}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Description"
+              variant="outlined"
+              name="description"
+              value={newCategory ? newCategoryObj.description : catData.description}
+              onChange={changeHandler}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Image"
+              variant="outlined"
+              type="file"
+              name="categoryImg"
+              onChange={async (e) => {
+                console.log(e.target.files[0]);
+                const imgData = new FormData();
+                imgData.append('image', e.target.files[0]);
+                const res = await axios.post('http://localhost:8000/upload', imgData);
+                console.log(res.data.imgUrl);
+                setNewCategoryObj({ ...newCategoryObj, categoryImg: res.data.imgUrl });
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Rating"
+              variant="outlined"
+              type="number"
+              name="categoryRating"
+              value={newCategory ? newCategoryObj.categoryRating : catData.categoryRating}
+              onChange={changeHandler}
+            />
+            <Button
+              onClick={() => {
+                if (newCategory) {
+                  addCategory();
+                } else {
+                  updateCategory();
+                }
+              }}
+            >
+              Submit
+            </Button>
+          </Box>
+        </Box>
       </Modal>
     </Box>
   );
