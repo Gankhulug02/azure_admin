@@ -9,6 +9,10 @@ const CategoryProvider = ({ children }) => {
 
   const [fileteredCategory, setFilteredCategory] = useState([]);
 
+  const [catData, setCatData] = useState({});
+
+  const { _id } = catData;
+
   const getCategory = () => {
     axios
       .get('http://localhost:8000/categories')
@@ -22,8 +26,40 @@ const CategoryProvider = ({ children }) => {
       });
   };
 
+  const updateCategory = async () => {
+    try {
+      const res = await axios.put(`http://localhost:8000/categories/${_id}`, catData);
+      // toggleSubmit();
+      // modalToggle();
+    } catch (error) {
+      console.log('UC', error);
+    }
+  };
+
+  const addCategory = async ({ newCategoryObj }) => {
+    try {
+      const res = await axios.post('http://localhost:8000/categories', newCategoryObj);
+      // toggleSubmit();
+      // modalToggle();
+    } catch (error) {
+      console.log('AC', error);
+    }
+  };
+
   return (
-    <CategoryContext.Provider value={{ categories, setCategory, fileteredCategory, setFilteredCategory, getCategory }}>
+    <CategoryContext.Provider
+      value={{
+        categories,
+        setCategory,
+        fileteredCategory,
+        setFilteredCategory,
+        getCategory,
+        addCategory,
+        updateCategory,
+        catData,
+        setCatData,
+      }}
+    >
       {children}
     </CategoryContext.Provider>
   );

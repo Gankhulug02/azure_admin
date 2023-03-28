@@ -40,7 +40,7 @@ const deleteCat = ({ _id, toggleSubmit }) => {
     .delete(`http://localhost:8000/categories/${_id}`)
     .then((res) => {
       console.log('res', res);
-      toggleSubmit();
+      // toggleSubmit();
     })
     .catch((err) => {
       console.log('Err', err);

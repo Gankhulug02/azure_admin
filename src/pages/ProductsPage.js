@@ -208,6 +208,17 @@ export default function ProductsPage() {
           setFilteredTravel={setFilteredTravel}
           filteredTravel={filteredTravel}
         />
+        {/* <ModalYesOrNo
+          open={yes}
+          handleClose={handleNo}
+          title="Travel"
+          noFunc={() => {
+            console.log('No');
+          }}
+          yesFunc={() => {
+            console.log('Yes Delete');
+          }}
+        /> */}
       </Container>
     </>
   );
