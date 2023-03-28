@@ -8,6 +8,8 @@ import ThemeProvider from './theme';
 import { StyledChart } from './components/chart';
 import ScrollToTop from './components/scroll-to-top';
 import AuthProvider from './context/AuthContext';
+import CategoryProvider from './context/Category';
+import AlertProvider from './context/Alert';
 
 // ----------------------------------------------------------------------
 
@@ -17,9 +19,13 @@ export default function App() {
       <BrowserRouter>
         <ThemeProvider>
           <AuthProvider>
-            <ScrollToTop />
-            <StyledChart />
-            <Router />
+            <CategoryProvider>
+              <AlertProvider>
+                <ScrollToTop />
+                <StyledChart />
+                <Router />
+              </AlertProvider>
+            </CategoryProvider>
           </AuthProvider>
         </ThemeProvider>
       </BrowserRouter>

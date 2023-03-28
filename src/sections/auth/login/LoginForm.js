@@ -12,10 +12,13 @@ import Iconify from '../../../components/iconify';
 
 export default function LoginForm() {
   const navigate = useNavigate();
+
   const { user, setUser } = useContext(AuthContext);
 
   const [showPassword, setShowPassword] = useState(false);
+
   const [email, setEmail] = useState('ganaa02@gmail.com');
+
   const [password, setPassword] = useState('Pass123');
 
   const handleClick = async () => {

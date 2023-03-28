@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { Navigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { TextField } from '@mui/material';
-import { editCat, deleteCat, createCat } from '../../axios/index';
+import { editCat, deleteCat, createCat } from '../../axios/category';
 
 const style = {
   display: 'flex',
@@ -23,14 +21,8 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ isModal, catData, modalToggle, isSubmit, setIsSubmit }) {
-  console.log(catData.name);
-
+export default function CategoryModal({ isModal, catData, modalToggle, isSubmit, setIsSubmit }) {
   const { _id, title, description, categoryImg, categoryRating } = catData;
-
-  const [open, setOpen] = React.useState(true);
-
-  const [iconName, setIconName] = React.useState('');
 
   const [titleChange, setTitleChange] = React.useState(title);
 
@@ -39,6 +31,11 @@ export default function BasicModal({ isModal, catData, modalToggle, isSubmit, se
   const [imgChange, setImgChange] = React.useState(categoryImg);
 
   const [ratingChange, setRatingChange] = React.useState(categoryRating);
+
+  const toggleSubmit = () => {
+    console.log(isSubmit);
+    setIsSubmit(!isSubmit);
+  };
 
   let form = '';
 
@@ -84,9 +81,8 @@ export default function BasicModal({ isModal, catData, modalToggle, isSubmit, se
         />
         <Button
           onClick={() => {
-            editCat({ titleChange, descriptionChange, imgChange, ratingChange, _id });
+            editCat({ titleChange, descriptionChange, imgChange, ratingChange, _id, toggleSubmit });
             modalToggle();
-            setIsSubmit(!isSubmit);
           }}
         >
           Submit
@@ -102,9 +98,8 @@ export default function BasicModal({ isModal, catData, modalToggle, isSubmit, se
         <Box>
           <Button
             onClick={() => {
-              deleteCat({ _id });
+              deleteCat({ _id, setIsSubmit });
               modalToggle();
-              setIsSubmit(!isSubmit);
             }}
           >
             Yes
@@ -112,6 +107,7 @@ export default function BasicModal({ isModal, catData, modalToggle, isSubmit, se
           <Button
             onClick={() => {
               modalToggle();
+              toggleSubmit();
             }}
           >
             No
@@ -157,9 +153,8 @@ export default function BasicModal({ isModal, catData, modalToggle, isSubmit, se
         />
         <Button
           onClick={() => {
-            createCat({ titleChange, descriptionChange, imgChange, ratingChange, _id });
+            createCat({ titleChange, descriptionChange, imgChange, ratingChange, _id, toggleSubmit });
             modalToggle();
-            setIsSubmit(!isSubmit);
           }}
         >
           Submit
@@ -168,16 +163,10 @@ export default function BasicModal({ isModal, catData, modalToggle, isSubmit, se
     );
   }
 
-  //   const handleOpen = (e) => {
-  //     setOpen(true);
-  //     setIconName(e);
-  //   };
-
   const handleClose = () => modalToggle();
 
   return (
-    <div>
-      {/* <Button onClick={() => handleOpen(name)}>{icon}</Button> */}
+    <Box>
       <Modal
         open={isModal}
         onClose={handleClose}
@@ -186,7 +175,7 @@ export default function BasicModal({ isModal, catData, modalToggle, isSubmit, se
       >
         <Box sx={style}>{form}</Box>
       </Modal>
-    </div>
+    </Box>
   );
 }
 

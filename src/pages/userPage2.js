@@ -31,7 +31,7 @@ import { red } from '@mui/material/colors';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
-import Modal from '../components/modal/modal';
+import Modal from '../components/modal/categoryModal';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock

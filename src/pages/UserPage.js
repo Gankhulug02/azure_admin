@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 // @mui
 import {
@@ -31,11 +31,12 @@ import { red } from '@mui/material/colors';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
-import Modal from '../components/modal/modal';
+import CategoryModal from '../components/modal/categoryModal';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
+import { CategoryContext } from '../context/Category';
 
 // ----------------------------------------------------------------------
 
@@ -80,13 +81,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function UserPage() {
-  const icons = [
-    { icon: <DeleteIcon sx={{ color: red[500] }} />, name: 'Delete' },
-    { icon: <EditIcon color="action" />, name: 'Edit' },
-  ];
-
-  const [categories, setCategory] = useState([]);
-
+  // State
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -106,6 +101,14 @@ export default function UserPage() {
   const [isModal, setIsModal] = useState(false);
 
   const [isSubmit, setIsSubmit] = useState(false);
+
+  // Context
+  const { categories, fileteredCategory, getCategory } = useContext(CategoryContext);
+
+  const icons = [
+    { icon: <DeleteIcon sx={{ color: red[500] }} />, name: 'Delete' },
+    { icon: <EditIcon color="action" />, name: 'Edit' },
+  ];
 
   const modalToggle = () => {
     setIsModal(!isModal);
@@ -136,7 +139,9 @@ export default function UserPage() {
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
+
     let newSelected = [];
+
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
     } else if (selectedIndex === 0) {
@@ -167,24 +172,9 @@ export default function UserPage() {
 
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
-  const [fileteredCategory, setFilteredCategory] = useState([]);
-
   const isNotFound = !filteredUsers.length && !!filterName;
 
-  const getData = () => {
-    axios
-      .get('http://localhost:8000/categories')
-      .then((res) => {
-        console.log('CAT IRLEE', res.data.categories);
-        setCategory(res.data.categories);
-        setFilteredCategory(res.data.categories);
-      })
-      .catch((err) => {
-        console.log('Err', err);
-      });
-  };
-
-  useEffect(() => getData(), [isSubmit]);
+  useEffect(() => getCategory(), [isSubmit]);
 
   return (
     <>
@@ -280,16 +270,6 @@ export default function UserPage() {
                     )}
                   </TableBody>
 
-                  {isModal && (
-                    <Modal
-                      catData={catData}
-                      isSubmit={isSubmit}
-                      setIsSubmit={setIsSubmit}
-                      isModal={isModal}
-                      modalToggle={modalToggle}
-                    />
-                  )}
-
                   {isNotFound && (
                     <TableBody>
                       <TableRow>
@@ -330,34 +310,15 @@ export default function UserPage() {
         )}
       </Container>
 
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Засах
-        </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Устгах
-        </MenuItem>
-      </Popover>
+      {isModal && (
+        <CategoryModal
+          catData={catData}
+          isSubmit={isSubmit}
+          setIsSubmit={setIsSubmit}
+          isModal={isModal}
+          modalToggle={modalToggle}
+        />
+      )}
     </>
   );
 }

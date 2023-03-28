@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { TextField } from '@mui/material';
-import editCat from '../../axios';
+import editCat from '../../axios/category';
 
 // const fields = ['title', 'description'];
 
