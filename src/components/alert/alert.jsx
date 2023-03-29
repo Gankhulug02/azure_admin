@@ -33,7 +33,7 @@ export default function MyAlert() {
           {alertText}
         </Alert>
       </Collapse>
-      {/* <Button
+      <Button
         disabled={open}
         variant="outlined"
         onClick={() => {
@@ -41,7 +41,7 @@ export default function MyAlert() {
         }}
       >
         Re-open
-      </Button> */}
+      </Button>
     </Box>
   );
 }

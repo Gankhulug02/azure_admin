@@ -5,6 +5,7 @@ import Modal from '@mui/material/Modal';
 import { TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { CategoryContext } from '../../context/Category';
+import { AlertContext } from '../../context/Alert';
 
 const style = {
   display: 'flex',
@@ -22,15 +23,7 @@ const style = {
   p: 4,
 };
 
-export default function CategoryModal({
-  isModal,
-  // catData,
-  // setCatData,
-  modalToggle,
-  isSubmit,
-  setIsSubmit,
-  newCategory,
-}) {
+export default function CategoryModal({ isModal, modalToggle, isSubmit, setIsSubmit, newCategory }) {
   const [newCategoryObj, setNewCategoryObj] = React.useState({
     title: '',
     description: '',
@@ -38,8 +31,10 @@ export default function CategoryModal({
     categoryRating: '',
   });
 
-  const { categories, fileteredCategory, getCategory, catData, setCatData, addCategory, updateCategory } =
-    useContext(CategoryContext);
+  const { catData, setCatData, addCategory, updateCategory } = useContext(CategoryContext);
+  const { open, setOpen, alertText, setAlertText } = AlertContext;
+
+  console.log();
 
   const changeHandler = (e) => {
     if (newCategory) {
@@ -49,11 +44,12 @@ export default function CategoryModal({
     }
   };
 
-  const toggleSubmit = () => {
+  const handleClose = () => {
+    modalToggle();
     setIsSubmit(!isSubmit);
+    setOpen(true);
+    setAlertText('asd');
   };
-
-  const handleClose = () => modalToggle();
 
   return (
     <Box>
@@ -83,8 +79,6 @@ export default function CategoryModal({
               onChange={changeHandler}
             />
             <TextField
-              // id="outlined-basic"
-              // label="Image"
               variant="outlined"
               type="file"
               name="categoryImg"
@@ -93,8 +87,11 @@ export default function CategoryModal({
                 const imgData = new FormData();
                 imgData.append('image', e.target.files[0]);
                 const res = await axios.post('http://localhost:8000/upload', imgData);
-                console.log(res.data.imgUrl);
-                setNewCategoryObj({ ...newCategoryObj, categoryImg: res.data.imgUrl });
+                if (newCategory) {
+                  setNewCategoryObj({ ...newCategoryObj, categoryImg: res.data.imgUrl });
+                } else {
+                  setCatData({ ...catData, categoryImg: res.data.imgUrl });
+                }
               }}
             />
             <TextField
@@ -110,9 +107,11 @@ export default function CategoryModal({
               onClick={() => {
                 if (newCategory) {
                   addCategory({ newCategoryObj });
+                  handleClose();
                 } else {
-                  console.log('update');
+                  console.log(catData);
                   updateCategory();
+                  handleClose();
                 }
               }}
             >

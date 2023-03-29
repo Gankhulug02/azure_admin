@@ -37,6 +37,7 @@ const CategoryProvider = ({ children }) => {
   };
 
   const addCategory = async ({ newCategoryObj }) => {
+    console.log('AC', newCategoryObj);
     try {
       const res = await axios.post('http://localhost:8000/categories', newCategoryObj);
       // toggleSubmit();
@@ -44,6 +45,17 @@ const CategoryProvider = ({ children }) => {
     } catch (error) {
       console.log('AC', error);
     }
+  };
+
+  const deleteCat = ({ _id }) => {
+    axios
+      .delete(`http://localhost:8000/categories/${_id}`)
+      .then((res) => {
+        console.log('res', res);
+      })
+      .catch((err) => {
+        console.log('Err', err);
+      });
   };
 
   return (
@@ -58,6 +70,7 @@ const CategoryProvider = ({ children }) => {
         updateCategory,
         catData,
         setCatData,
+        deleteCat,
       }}
     >
       {children}

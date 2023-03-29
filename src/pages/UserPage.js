@@ -20,15 +20,15 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { red } from '@mui/material/colors';
 
 // components
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 import CategoryModal from '../components/modal/categoryModal';
-import { deleteCat } from '../axios/category';
+
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
+
 // mock
 import USERLIST from '../_mock/user';
 import { CategoryContext } from '../context/Category';
@@ -78,15 +78,17 @@ function applySortFilter(array, comparator, query) {
 export default function UserPage() {
   // State
 
-  const [yes, setYes] = useState(false);
-
-  const [newCategory, setNewCategory] = useState(false);
-
   const [page, setPage] = useState(0);
+
+  const [yes, setYes] = useState(false);
 
   const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
+
+  const [isModal, setIsModal] = useState(false);
+
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const [orderBy, setOrderBy] = useState('name');
 
@@ -94,14 +96,12 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [newCategory, setNewCategory] = useState(false);
+
   // const [catData, setCatData] = useState({});
 
-  const [isModal, setIsModal] = useState(false);
-
-  const [isSubmit, setIsSubmit] = useState(false);
-
   // Context
-  const { categories, fileteredCategory, getCategory, catData, setCatData } = useContext(CategoryContext);
+  const { categories, fileteredCategory, getCategory, catData, setCatData, deleteCat } = useContext(CategoryContext);
 
   const modalToggle = () => {
     setIsModal(!isModal);
@@ -125,7 +125,7 @@ export default function UserPage() {
   const handleYes = () => {
     setYes(true);
   };
-  const handleNo = () => {
+  const handleClose = () => {
     setYes(false);
   };
 
@@ -231,10 +231,7 @@ export default function UserPage() {
 
                           <TableCell align="left">url</TableCell>
 
-                          <TableCell align="left">
-                            {/* <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label> */}
-                            {categoryRating}
-                          </TableCell>
+                          <TableCell align="left">{categoryRating}</TableCell>
 
                           <TableCell align="right">
                             <Button
@@ -249,7 +246,6 @@ export default function UserPage() {
                               onClick={() => {
                                 modalToggle();
                                 setCatData({ ...row });
-                                setNewCategory(false);
                                 setIsSubmit(!isSubmit);
                                 setNewCategory(false);
                               }}
@@ -321,16 +317,16 @@ export default function UserPage() {
 
       <ModalYesOrNo
         open={yes}
-        handleClose={handleNo}
+        handleClose={handleClose}
         title="Category"
         noFunc={() => {
-          handleNo();
+          handleClose();
           console.log('No');
         }}
         yesFunc={() => {
           console.log('Yes Delete');
           deleteCat({ _id: catData._id });
-          handleNo();
+          handleClose();
           setIsSubmit(!isSubmit);
         }}
       />

@@ -12,6 +12,8 @@ import { Container, Stack, Typography, Button } from '@mui/material';
 // components
 import Iconify from '../components/iconify';
 import TravelModal from '../components/modal/travelModal';
+import ModalYesOrNo from '../components/modal/ModalYesOrNo';
+import { deleteTravel } from '../axios/travel';
 
 import {
   ProductSort,
@@ -25,6 +27,10 @@ import PRODUCTS from '../_mock/products';
 // ----------------------------------------------------------------------
 
 export default function ProductsPage() {
+  const [yes, setYes] = useState(false);
+
+  const [isSubmit, setIsSubmit] = useState(false);
+
   const [travelData, setTravelData] = useState([]);
 
   const [filteredTravel, setFilteredTravel] = useState({});
@@ -33,6 +39,13 @@ export default function ProductsPage() {
 
   const toggleModal = () => {
     setIsModal(!isModal);
+  };
+
+  const handleYes = () => {
+    setYes(true);
+  };
+  const handleClose = () => {
+    setYes(false);
   };
 
   const getTravel = () => {
@@ -117,17 +130,7 @@ export default function ProductsPage() {
               >
                 <Box sx={{ display: 'flex', gap: '5px', width: '100%' }}>
                   <Box sx={{ border: '0px solid red', flex: '1' }}>
-                    <Rating
-                      name="no-value"
-                      value={e.travelRating}
-                      sx={{ fontSize: '15px' }}
-                      // onChange={(event) => {
-                      //   console.log(event.target.value);
-                      //   travelData[index].travelRating = event.target.value;
-                      //   console.log(travelData);
-                      //   setTravelData(travelData);
-                      // }}
-                    />
+                    <Rating name="no-value" value={e.travelRating} sx={{ fontSize: '15px' }} />
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'end', pr: 2, border: '0px solid red', flex: '1' }}>
                     {e.travelPrice}$
@@ -174,7 +177,6 @@ export default function ProductsPage() {
                     <Typography variant="p" sx={{ fontSize: '0.7rem', color: 'black' }}>
                       EDIT
                     </Typography>
-                    {/* <EditIcon sx={{ color: 'grey', fontSize: '20px' }} /> */}
                   </Button>
                   <Button
                     sx={{
@@ -187,13 +189,12 @@ export default function ProductsPage() {
                     }}
                     onClick={() => {
                       setFilteredTravel({ ...e, name: 'Delete', index });
-                      toggleModal();
+                      handleYes();
                     }}
                   >
                     <Typography variant="p" sx={{ fontSize: '0.7rem', color: 'black' }}>
                       DELETE
                     </Typography>
-                    {/* <DeleteIcon sx={{ color: 'red', fontSize: '20px' }} /> */}
                   </Button>
                 </Box>
               </Box>
@@ -208,17 +209,19 @@ export default function ProductsPage() {
           setFilteredTravel={setFilteredTravel}
           filteredTravel={filteredTravel}
         />
-        {/* <ModalYesOrNo
+        <ModalYesOrNo
           open={yes}
-          handleClose={handleNo}
+          handleClose={handleClose}
           title="Travel"
           noFunc={() => {
-            console.log('No');
+            handleClose();
           }}
           yesFunc={() => {
-            console.log('Yes Delete');
+            deleteTravel({ _id: filteredTravel._id });
+            handleClose();
+            setIsSubmit(!isSubmit);
           }}
-        /> */}
+        />
       </Container>
     </>
   );
