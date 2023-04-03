@@ -25,6 +25,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 import CategoryModal from '../components/modal/categoryModal';
+import MyAlert from '../components/alert/alert';
 
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
@@ -32,6 +33,7 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 import { CategoryContext } from '../context/Category';
+import { AlertContext } from '../context/Alert';
 import ModalYesOrNo from '../components/modal/ModalYesOrNo';
 
 // ----------------------------------------------------------------------
@@ -102,6 +104,7 @@ export default function UserPage() {
 
   // Context
   const { categories, fileteredCategory, getCategory, catData, setCatData, deleteCat } = useContext(CategoryContext);
+  const { open, setOpen, alertText, alertSeverity } = useContext(AlertContext);
 
   const modalToggle = () => {
     setIsModal(!isModal);
@@ -314,6 +317,8 @@ export default function UserPage() {
           newCategory={newCategory}
         />
       )}
+
+      <MyAlert open={open} setOpen={setOpen} alertText={alertText} alertSeverity={alertSeverity} />
 
       <ModalYesOrNo
         open={yes}

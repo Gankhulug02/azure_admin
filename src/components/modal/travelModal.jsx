@@ -11,8 +11,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 // Import Function
-import MyAlert from '../alert/alert';
-import { editTravel, deleteTravel, createTravel } from '../../axios/travel';
+// import MyAlert from '../alert/alert';
 import { CategoryContext } from '../../context/Category';
 import { AlertContext } from '../../context/Alert';
 
@@ -38,7 +37,7 @@ const TravelModal = ({ isModal, filteredTravel, setFilteredTravel, modalToggle, 
 
   // Context
   const { categories, getCategory } = useContext(CategoryContext);
-  const { setOpen, setAlertText, setAlertSeverity } = useContext(AlertContext);
+  const { setOpen, setAlertText, setAlertSeverity, createTravel, editTravel, deleteTravel } = useContext(AlertContext);
 
   if (!categories[0]) {
     getCategory();
@@ -52,98 +51,8 @@ const TravelModal = ({ isModal, filteredTravel, setFilteredTravel, modalToggle, 
   let form = 'your data';
 
   if (name === 'Edit') {
-    form = (
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', width: '100%' }}>
-        <TextField
-          id="outlined-basic"
-          label="Title"
-          variant="outlined"
-          value={title}
-          onChange={(event) => {
-            setFilteredTravel({ ...filteredTravel, title: event.target.value });
-          }}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Description"
-          variant="outlined"
-          value={description}
-          onChange={(event) => {
-            setFilteredTravel({ ...filteredTravel, description: event.target.value });
-          }}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Image"
-          variant="outlined"
-          value={travelImg}
-          onChange={(event) => {
-            setFilteredTravel({ ...filteredTravel, travelImg: event.target.value });
-          }}
-        />
-        <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'spaceBetween' }}>
-          <TextField
-            id="outlined-basic"
-            label="Rating"
-            variant="outlined"
-            type="number"
-            value={travelRating}
-            onChange={(event) => {
-              setFilteredTravel({ ...filteredTravel, travelRating: event.target.value });
-            }}
-            sx={{ flex: '1' }}
-          />
-          <TextField
-            id="outlined-basic"
-            label="Day"
-            variant="outlined"
-            type="number"
-            value={travelDay}
-            onChange={(event) => {
-              setFilteredTravel({ ...filteredTravel, travelDay: event.target.value });
-            }}
-            sx={{ flex: '1' }}
-          />
-          <Box sx={{ flex: '1' }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Category</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={catId}
-                label="Category"
-                onChange={handleChange}
-              >
-                {categories.map((e, index) => (
-                  <MenuItem key={index} value={e._id}>
-                    {e.title}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-        </Box>
-        <TextField
-          id="outlined-basic"
-          label="Price"
-          variant="outlined"
-          type="number"
-          value={travelPrice}
-          onChange={(event) => {
-            setFilteredTravel({ ...filteredTravel, travelPrice: event.target.value });
-          }}
-        />
-        <Button
-          onClick={() => {
-            travelData[index] = filteredTravel;
-            setTravelData(travelData);
-            editTravel(filteredTravel, _id, catId, modalToggle, setOpen, setAlertText, setAlertSeverity);
-          }}
-        >
-          Submit
-        </Button>
-      </Box>
-    );
+    // form = (
+    // );
   } else if (name === 'Delete') {
     form = (
       <Box>
@@ -276,9 +185,100 @@ const TravelModal = ({ isModal, filteredTravel, setFilteredTravel, modalToggle, 
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>{form}</Box>
+        <Box sx={style}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', width: '100%' }}>
+            <TextField
+              id="outlined-basic"
+              label="Title"
+              variant="outlined"
+              value={title}
+              onChange={(event) => {
+                setFilteredTravel({ ...filteredTravel, title: event.target.value });
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Description"
+              variant="outlined"
+              value={description}
+              onChange={(event) => {
+                setFilteredTravel({ ...filteredTravel, description: event.target.value });
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Image"
+              variant="outlined"
+              value={travelImg}
+              onChange={(event) => {
+                setFilteredTravel({ ...filteredTravel, travelImg: event.target.value });
+              }}
+            />
+            <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'spaceBetween' }}>
+              <TextField
+                id="outlined-basic"
+                label="Rating"
+                variant="outlined"
+                type="number"
+                value={travelRating}
+                onChange={(event) => {
+                  setFilteredTravel({ ...filteredTravel, travelRating: event.target.value });
+                }}
+                sx={{ flex: '1' }}
+              />
+              <TextField
+                id="outlined-basic"
+                label="Day"
+                variant="outlined"
+                type="number"
+                value={travelDay}
+                onChange={(event) => {
+                  setFilteredTravel({ ...filteredTravel, travelDay: event.target.value });
+                }}
+                sx={{ flex: '1' }}
+              />
+              <Box sx={{ flex: '1' }}>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={catId}
+                    label="Category"
+                    onChange={handleChange}
+                  >
+                    {categories.map((e, index) => (
+                      <MenuItem key={index} value={e._id}>
+                        {e.title}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </Box>
+            <TextField
+              id="outlined-basic"
+              label="Price"
+              variant="outlined"
+              type="number"
+              value={travelPrice}
+              onChange={(event) => {
+                setFilteredTravel({ ...filteredTravel, travelPrice: event.target.value });
+              }}
+            />
+            <Button
+              onClick={() => {
+                travelData[index] = filteredTravel;
+                setTravelData(travelData);
+                editTravel(filteredTravel, _id, catId, modalToggle, setOpen, setAlertText, setAlertSeverity);
+              }}
+            >
+              Submit
+            </Button>
+          </Box>
+        </Box>
       </Modal>
-      <MyAlert />
+      {/* <MyAlert /> */}
     </Box>
   );
 };

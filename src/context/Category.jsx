@@ -11,6 +11,20 @@ const CategoryProvider = ({ children }) => {
 
   const [catData, setCatData] = useState({});
 
+  const [newCategoryObj, setNewCategoryObj] = useState({
+    title: '',
+    description: '',
+    categoryImg: 'url',
+    categoryRating: '',
+  });
+
+  const [newTravelObj, setNewTravelObj] = useState({
+    title: '',
+    description: '',
+    categoryImg: 'url',
+    categoryRating: '',
+  });
+
   const { _id } = catData;
 
   const getCategory = () => {
@@ -26,9 +40,10 @@ const CategoryProvider = ({ children }) => {
       });
   };
 
-  const updateCategory = async () => {
+  const updateCategory = async ({ setAlertText }) => {
     try {
       const res = await axios.put(`http://localhost:8000/categories/${_id}`, catData);
+      setAlertText('Amjilltai soligdloo');
       // toggleSubmit();
       // modalToggle();
     } catch (error) {
@@ -36,10 +51,11 @@ const CategoryProvider = ({ children }) => {
     }
   };
 
-  const addCategory = async ({ newCategoryObj }) => {
+  const addCategory = async ({ newCategoryObj, setAlertText }) => {
     console.log('AC', newCategoryObj);
     try {
       const res = await axios.post('http://localhost:8000/categories', newCategoryObj);
+      setAlertText('shine category amjilltai uuslee ');
       // toggleSubmit();
       // modalToggle();
     } catch (error) {
@@ -52,6 +68,54 @@ const CategoryProvider = ({ children }) => {
       .delete(`http://localhost:8000/categories/${_id}`)
       .then((res) => {
         console.log('res', res);
+      })
+      .catch((err) => {
+        console.log('Err', err);
+      });
+  };
+
+  // Travel
+
+  const editTravel = (filteredTravel, _id, catId, modalToggle, setOpen, setAlertText, setAlertSeverity) => {
+    console.log(filteredTravel);
+    axios
+      .put(`http://localhost:8000/travels/${_id}`, { ...filteredTravel, category: catId })
+      .then((res) => {
+        console.log('res', res);
+        console.log('res.body.message', res.data.message);
+        setAlertSeverity('success');
+        setOpen(true);
+        setAlertText(res.data.message);
+        modalToggle();
+      })
+      .catch((err) => {
+        console.log(err);
+        // errorAlert(err);
+      });
+  };
+
+  const createTravel = ({ filteredTravel, catId, modalToggle }) => {
+    const { name, ...rest } = filteredTravel;
+    console.log('', rest);
+
+    axios
+      .post(`http://localhost:8000/travels`, { ...rest, travelLocation: 'Tokyo', category: catId })
+      .then((res) => {
+        console.log('res', res);
+        modalToggle();
+      })
+      .catch((err) => {
+        console.log('Err', err);
+      });
+  };
+
+  const deleteTravel = ({ _id, modalToggle }) => {
+    console.log(_id);
+    axios
+      .delete(`http://localhost:8000/travels/${_id}`)
+      .then((res) => {
+        console.log('res', res);
+        modalToggle();
       })
       .catch((err) => {
         console.log('Err', err);
@@ -71,6 +135,11 @@ const CategoryProvider = ({ children }) => {
         catData,
         setCatData,
         deleteCat,
+        newCategoryObj,
+        setNewCategoryObj,
+        createTravel,
+        deleteTravel,
+        editTravel,
       }}
     >
       {children}

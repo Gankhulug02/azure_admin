@@ -7,11 +7,11 @@ import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import { AlertContext } from '../../context/Alert';
 
-export default function MyAlert() {
-  const { open, setOpen, alertText, alertSeverity } = useContext(AlertContext);
+export default function MyAlert({ open, setOpen, alertText, alertSeverity }) {
+  // const { open, setOpen, alertText, alertSeverity } = useContext(AlertContext);
 
   return (
-    <Box sx={{ position: 'absolute', top: '20px', left: '0px', zIndex: '9999999', width: '20%' }}>
+    <Box sx={{ position: 'absolute', top: '20px', left: '30%', zIndex: '1301', width: '40%' }}>
       <Collapse in={open}>
         <Alert
           severity={alertSeverity}

@@ -24,17 +24,9 @@ const style = {
 };
 
 export default function CategoryModal({ isModal, modalToggle, isSubmit, setIsSubmit, newCategory }) {
-  const [newCategoryObj, setNewCategoryObj] = React.useState({
-    title: '',
-    description: '',
-    categoryImg: 'url',
-    categoryRating: '',
-  });
-
-  const { catData, setCatData, addCategory, updateCategory } = useContext(CategoryContext);
-  const { open, setOpen, alertText, setAlertText } = AlertContext;
-
-  console.log();
+  const { catData, setCatData, newCategoryObj, setNewCategoryObj, addCategory, updateCategory } =
+    useContext(CategoryContext);
+  const { setOpen, setAlertText } = useContext(AlertContext);
 
   const changeHandler = (e) => {
     if (newCategory) {
@@ -45,10 +37,9 @@ export default function CategoryModal({ isModal, modalToggle, isSubmit, setIsSub
   };
 
   const handleClose = () => {
+    setOpen(true);
     modalToggle();
     setIsSubmit(!isSubmit);
-    setOpen(true);
-    setAlertText('asd');
   };
 
   return (
@@ -106,11 +97,11 @@ export default function CategoryModal({ isModal, modalToggle, isSubmit, setIsSub
             <Button
               onClick={() => {
                 if (newCategory) {
-                  addCategory({ newCategoryObj });
+                  addCategory({ newCategoryObj, setAlertText });
                   handleClose();
                 } else {
                   console.log(catData);
-                  updateCategory();
+                  updateCategory({ setAlertText });
                   handleClose();
                 }
               }}
